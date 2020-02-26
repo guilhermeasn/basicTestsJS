@@ -6,10 +6,10 @@
     <body>
     	<h2>Test URL Handler</h2>
 		<p>
-			<input type='text' value='' id='url'><br>
+			<input type='text' value='' id='url' style="min-width: 350px; padding: 10px;"><br>
 			<input type='checkbox' id='save'> Save History
 		</p>
-		<p><input type='button' value='Renew!' id='renew'></p>
+		<p><input type='button' value='Change URL' id='change'></p>
 		<hr><pre>JavaScript:<code></code></pre>
 		
         <script>
@@ -17,13 +17,14 @@
 				document.getElementById('url').value = window.location.pathname;
 				document.querySelector('code').innerHTML = document.querySelector('script').innerText.replace(/(\w+)(\.\w+)(\.\w+)?/g, '<span style="color: brown">$1</span><span style="color: green">$2</span><span style="color: blue">$3</span>');
 			});
-			document.getElementById('renew').addEventListener('click', () => {
-				renewURL();
-			});
-			
-			function renewURL() {
+			document.getElementById('change').addEventListener('click', () => {
 				let input = `/${document.getElementById('url').value.replace(/^\//,'')}`;
 				let save  = document.getElementById('save').checked;
+				changeURL(input, save);
+				console.log(window.location.href);
+			});
+			
+			function changeURL(input, save = false) {
 				if(save) history.pushState(null, null, input);
 				else     history.replaceState(null, null, input);
 			}
