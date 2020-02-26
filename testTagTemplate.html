@@ -44,7 +44,6 @@
 			
 			
 			// Javascript
-			
 			Object.entries(names).forEach(([index, config])=>{
 				var template = document.querySelector('#myTemplate').content.cloneNode(true);
 				Object.entries(config).forEach(([dom, attrs])=>{
@@ -61,7 +60,6 @@
 			
 			
 			// JQuery
-			/*
 			$.each(names, function(index, config) {
 				var template = document.querySelector('#myTemplate').content.cloneNode(true);
 				$.each(config, function(dom, attrs) {
@@ -74,8 +72,6 @@
 				});
 				document.body.appendChild(template);
 			});
-			*/
-			
         </script>
     </body>
 </html>
