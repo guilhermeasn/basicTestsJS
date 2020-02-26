@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Test URL Handler</title>
+    </head>
+    <body>
+    	<h2>Test URL Handler</h2>
+		<p>
+			<input type='text' value='' id='url'><br>
+			<input type='checkbox' id='save'> Save History
+		</p>
+		<p><input type='button' value='Renew!' id='renew'></p>
+		<hr><pre>JavaScript:<code></code></pre>
+		
+        <script>
+			window.addEventListener('load', () => {
+				document.getElementById('url').value = window.location.pathname;
+				document.querySelector('code').innerHTML = document.querySelector('script').innerText.replace(/(\w+)(\.\w+)(\.\w+)?/g, '<span style="color: brown">$1</span><span style="color: green">$2</span><span style="color: blue">$3</span>');
+			});
+			document.getElementById('renew').addEventListener('click', () => {
+				renewURL();
+			});
+			
+			function renewURL() {
+				let input = `/${document.getElementById('url').value.replace(/^\//,'')}`;
+				let save  = document.getElementById('save').checked;
+				if(save) history.pushState(null, null, input);
+				else     history.replaceState(null, null, input);
+			}
+        </script>
+    </body>
+</html>

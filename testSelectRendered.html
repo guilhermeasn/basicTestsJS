@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Test Select Rendered</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <style>
+			div.custom-select {
+				padding: 0;
+			}
+        	div.custom-select ul {
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				
+				position:relative;
+				left:0;
+				top: 0.9rem;
+				
+				border: 1px solid #ced4da;
+				color: #495057;
+				border-radius: .25rem;
+				
+				list-style: none;
+				box-shadow: 0 0 .5em #444;
+			}
+			
+			div.custom-select ul li {
+				border-radius: .125rem;
+				padding: .5em;
+				margin: .2em;
+			}
+			
+			div.custom-select ul li[data-value]:hover {
+				cursor: pointer;
+				background: #4E8FCF;
+				color: #FFF;
+			}
+			
+			div.custom-select .custom-select-value {
+				position:relative;
+				left:0.5rem;
+				top: 0.3rem;
+			}
+        </style>
+    </head>
+    <body class="container py-5">
+    	<h2>Test Select Rendered</h2>
+		<form name="formulario">
+			<input type="hidden" name="selecao" id="selecao">
+			<div class="custom-select" data-input="#selecao">
+				<div class="custom-select-value"> ---- SELECIONE ---- </div>
+				<ul class="d-none">
+					<li><input type="text" class="form-control" placeholder="Pesquisar ..."></li>
+					<li><hr class="m-0 p-0"></li>
+					<li data-value="letras">abc</li>
+					<li data-value="numeros">123</li>
+				</ul>
+			</div>
+		</form>
+        
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script>
+			$('.custom-select-value').click(function () {
+				let ul = $(this).parent().find('ul');
+				(ul.hasClass('d-none'))
+					? ul.removeClass('d-none')
+					: ul.addClass('d-none');
+			});
+			$('.custom-select ul li[data-value]').click(function() {
+				let divSelect = $(this).parent().parent();
+				let ul = $(this).parent();
+				ul.addClass('d-none');
+				divSelect.find('.custom-select-value').html($(this).html());
+				$(divSelect.data('input')).val($(this).data('value'));
+			});
+        </script>
+    </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Test Tag Template</title>
+        <style>
+			.italic {
+				font-style: italic;
+			}
+		</style>
+    </head>
+    <body>
+    	<h2>Test tag Template</h2>
+        
+        <!-- Tag Tempate -->
+        <template id="myTemplate">
+        	<div>
+            	<h3>Hello <span class="greeting"></span> <span class="name"></span>!</h3>
+            </div>
+        </template>
+        
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        
+        <script>
+			var names = {
+				1: {
+					'.greeting': 'Mr',
+					'.name': {
+						'inner': 'Guilherme',
+						'class': 'name italic',
+						'style': 'color:red',
+						'title': 'husband'
+					}
+				},
+				2: {
+					'.greeting':  'Mrs',
+					'.name': {
+						'inner': 'Tamiris',
+						'class': 'name italic',
+						'style': 'color:green',
+						'title': 'wife'
+					}
+				}
+			};
+			
+			
+			// Javascript
+			
+			Object.entries(names).forEach(([index, config])=>{
+				var template = document.querySelector('#myTemplate').content.cloneNode(true);
+				Object.entries(config).forEach(([dom, attrs])=>{
+					if(typeof attrs == 'object') {
+						Object.entries(attrs).forEach(([attr, value])=>{
+							if(attr == 'inner') template.querySelector(dom).innerHTML = value;
+							else                template.querySelector(dom).setAttribute(attr, value);
+						});
+					} else template.querySelector(dom).innerHTML = attrs;
+				});
+				document.body.appendChild(template);
+			});
+			
+			
+			
+			// JQuery
+			/*
+			$.each(names, function(index, config) {
+				var template = document.querySelector('#myTemplate').content.cloneNode(true);
+				$.each(config, function(dom, attrs) {
+					if(typeof attrs == 'object') {
+						$.each(attrs, function(attr, value) {
+							if(attr == 'inner') template.querySelector(dom).innerHTML = value;
+							else                template.querySelector(dom).setAttribute(attr, value);
+						});
+					} else template.querySelector(dom).innerHTML = attrs;
+				});
+				document.body.appendChild(template);
+			});
+			*/
+			
+        </script>
+    </body>
+</html>
