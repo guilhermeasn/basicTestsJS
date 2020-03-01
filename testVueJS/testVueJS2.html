@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tests Vue JS</title>
+
+        <!-- development version, includes helpful console warnings -->
+        <!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+
+        <!-- production version, optimized for size and speed -->
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    </head>
+    <body>
+        <section id="menu" v-if="view">
+            <h1>{{content}}</h1>
+            <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;" v-for="link in links">
+                <strong>{{link.label}}:</strong>
+                <a :href="link.href" :title="link.title" target="_blank">{{link.inner}}</a>
+            </div>
+        </section>
+        
+        <script>
+            menu = new Vue({
+                el: '#menu',
+                data: { view: false }
+            });
+            window.addEventListener('load', function() {
+                let links = new Array();
+                links.push({
+                    "label": "Guia",
+                    "title": "Aprenda Vue.JS",
+                    "href": "https://br.vuejs.org/v2/guide/",
+                    "inner": "br.vuejs.org/v2/guide/"
+                });
+                links.push({
+                    "label": "API",
+                    "title": "Detalhes do Vue.JS",
+                    "href": "https://br.vuejs.org/v2/api/",
+                    "inner": "br.vuejs.org/v2/api/"
+                });
+                links.push({
+                    "label": "Estilo",
+                    "title": "Use corretamente Vue.JS",
+                    "href": "https://br.vuejs.org/v2/style-guide/",
+                    "inner": "br.vuejs.org/v2/style-guide/"
+                });
+                menu.content = 'Documentação Vue';
+                menu.links   = links;
+                menu.view    = true;
+            });
+        </script>
+
+    </body>
+</html>
