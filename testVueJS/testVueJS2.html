@@ -4,10 +4,10 @@
         <title>Tests Vue JS</title>
 
         <!-- development version, includes helpful console warnings -->
-        <!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
         <!-- production version, optimized for size and speed -->
-        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
     </head>
     <body>
         <section id="menu" v-if="view">
@@ -21,7 +21,11 @@
         <script>
             menu = new Vue({
                 el: '#menu',
-                data: { view: false }
+                data: {
+                    view: false,
+                    content: '',
+                    links: []
+                }
             });
             window.addEventListener('load', function() {
                 let links = new Array();
