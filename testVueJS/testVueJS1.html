@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tests Vue JS</title>
+
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <!-- production version, optimized for size and speed -->
+        <!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+    </head>
+    <body>
+
+        <section class="vue-page" id="about" v-if="view">
+            {{content}}
+        </section>
+
+        <section class="vue-page" id="menu" v-if="view">
+            <ul>
+                <li v-for="link in links">
+                    <a :href='link.href'>{{link.inner}}</a>
+                </li>
+            </ul>
+        </section>
+        
+        <script>
+            var pages = new Array();
+
+            document.querySelectorAll('.vue-page').forEach(element => {
+                pages[element.id] = new Vue({
+                    el: element,
+                    data: { view: false }
+                });
+            });
+
+            pages.menu.view  = true;
+            pages.menu.links = [
+                { href: "#", inner: "link1" },
+                { href: "#", inner: "link2" }
+            ];
+
+            pages.about.view    = true;
+            pages.about.content = 'Hello World!';
+        </script>
+
+    </body>
+</html>
