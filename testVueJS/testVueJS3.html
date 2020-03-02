@@ -12,7 +12,7 @@
     <body>
         <section id="menu" v-if="view">
             <h1 v-html="content"></h1>
-            <div-link id='menu-links' v-for='(link, key) in links' :key='key' :data='link'></div-link>
+            <div-link class='menu-links' v-for='(link, key) in links' :key='key' :data='link'></div-link>
         </section>
 
         <template id="div-link">
