@@ -11,11 +11,8 @@
     </head>
     <body>
         <section id="menu" v-if="view">
-            <h1>{{content}}</h1>
-            <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;" v-for="link in links">
-                <strong>{{link.label}}:</strong>
-                <a :href="link.href" :title="link.title" target="_blank">{{link.inner}}</a>
-            </div>
+            <h1 v-html="content"></h1>
+            <div-link id='menu-links' :links='links'></div-link>
         </section>
         
         <script>
@@ -27,6 +24,19 @@
                     links: []
                 }
             });
+
+            Vue.component('div-link', {
+                props: ['links'],
+                template: `
+                    <div>
+                        <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;" v-for="link in links">
+                            <strong>{{link.label}}:</strong>
+                            <a :href="link.href" :title="link.title" target="_blank">{{link.inner}}</a>
+                        </div>
+                    </div>
+                `
+            });
+
             window.addEventListener('load', function() {
                 let links = new Array();
                 links.push({
@@ -47,7 +57,7 @@
                     "href": "https://br.vuejs.org/v2/style-guide/",
                     "inner": "br.vuejs.org/v2/style-guide/"
                 });
-                menu.content = 'Documentação Vue (feito com v-for)';
+                menu.content = 'Documentação Vue <em><small>(feito com Vue.component())</small></em>';
                 menu.links   = links;
                 menu.view    = true;
             });
