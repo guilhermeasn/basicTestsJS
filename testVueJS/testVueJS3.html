@@ -12,8 +12,17 @@
     <body>
         <section id="menu" v-if="view">
             <h1 v-html="content"></h1>
-            <div-link id='menu-links' :links='links'></div-link>
+            <div-link id='menu-links' :data='links'></div-link>
         </section>
+
+        <template id="div-link">
+            <div>
+                <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;" v-for="link in data">
+                    <strong>{{link.label}}:</strong>
+                    <a :href="link.href" :title="link.title" target="_blank">{{link.inner}}</a>
+                </div>
+            </div>
+        </template>
         
         <script>
             menu = new Vue({
@@ -25,16 +34,11 @@
                 }
             });
 
-            Vue.component('div-link', {
-                props: ['links'],
-                template: `
-                    <div>
-                        <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;" v-for="link in links">
-                            <strong>{{link.label}}:</strong>
-                            <a :href="link.href" :title="link.title" target="_blank">{{link.inner}}</a>
-                        </div>
-                    </div>
-                `
+            document.querySelectorAll('template').forEach(element => {
+                Vue.component(element.id, {
+                    props: ['data'],
+                    template: `#${element.id}`
+                });
             });
 
             window.addEventListener('load', function() {
