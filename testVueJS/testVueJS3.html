@@ -12,15 +12,13 @@
     <body>
         <section id="menu" v-if="view">
             <h1 v-html="content"></h1>
-            <div-link id='menu-links' :data='links'></div-link>
+            <div-link id='menu-links' v-for='link in links' :key='link.href' :data='link'></div-link>
         </section>
 
         <template id="div-link">
-            <div>
-                <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;" v-for="link in data">
-                    <strong>{{link.label}}:</strong>
-                    <a :href="link.href" :title="link.title" target="_blank">{{link.inner}}</a>
-                </div>
+            <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;">
+                <strong>{{data.label}}:</strong>
+                <a :href="data.href" :title="data.title" target="_blank">{{data.inner}}</a>
             </div>
         </template>
         
