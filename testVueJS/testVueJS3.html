@@ -12,56 +12,65 @@
     <body>
         <section id="menu" v-if="view">
             <h1 v-html="content"></h1>
-            <div-link id='menu-links' v-for='link in links' :key='link.href' :data='link'></div-link>
+            <div-link id='menu-links' v-for='(link, key) in links' :key='key' :data='link'></div-link>
         </section>
 
         <template id="div-link">
             <div style="border: 1px dashed #ccc; margin: 30px; padding: 20px;">
                 <strong>{{data.label}}:</strong>
-                <a :href="data.href" :title="data.title" target="_blank">{{data.inner}}</a>
+                <a :href="data.href" v-on:click="data.access=true" :title="data.title" target="_blank">{{data.inner}}</a>
+                {{ data.access ? '✓' : null }}
             </div>
         </template>
         
         <script>
-            menu = new Vue({
+            var menu = new Vue({
                 el: '#menu',
                 data: {
                     view: false,
                     content: '',
-                    links: []
+                    links: new Array()
                 }
             });
 
             document.querySelectorAll('template').forEach(element => {
                 Vue.component(element.id, {
                     props: ['data'],
-                    template: `#${element.id}`
+                    template: `#${element.id}`,
+                    methods: {
+                        change: function(index, value) {
+                            alert(value);
+                        }
+                    }
                 });
             });
 
             window.addEventListener('load', function() {
-                let links = new Array();
-                links.push({
-                    "label": "Guia",
-                    "title": "Aprenda Vue.JS",
-                    "href": "https://br.vuejs.org/v2/guide/",
-                    "inner": "br.vuejs.org/v2/guide/"
-                });
-                links.push({
-                    "label": "API",
-                    "title": "Detalhes do Vue.JS",
-                    "href": "https://br.vuejs.org/v2/api/",
-                    "inner": "br.vuejs.org/v2/api/"
-                });
-                links.push({
-                    "label": "Estilo",
-                    "title": "Use corretamente Vue.JS",
-                    "href": "https://br.vuejs.org/v2/style-guide/",
-                    "inner": "br.vuejs.org/v2/style-guide/"
-                });
                 menu.content = 'Documentação Vue <em><small>(feito com Vue.component())</small></em>';
-                menu.links   = links;
-                menu.view    = true;
+                menu.links = {
+                    "guia": {
+                        "access": false,
+                        "label": "Guia",
+                        "title": "Aprenda Vue.JS",
+                        "href": "https://br.vuejs.org/v2/guide/",
+                        "inner": "br.vuejs.org/v2/guide/"
+                    },
+                    "api": {
+                        "access": false,
+                        "label": "API",
+                        "title": "Detalhes do Vue.JS",
+                        "href": "https://br.vuejs.org/v2/api/",
+                        "inner": "br.vuejs.org/v2/api/"
+                    },
+                    "estilo": {
+                        "access": false,
+                        "label": "Estilo",
+                        "title": "Use corretamente Vue.JS",
+                        "href": "https://br.vuejs.org/v2/style-guide/",
+                        "inner": "br.vuejs.org/v2/style-guide/"
+                    }
+                };
+                menu.view = true;
             });
         </script>
 
