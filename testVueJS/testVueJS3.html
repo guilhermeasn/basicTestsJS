@@ -36,12 +36,7 @@
             document.querySelectorAll('template').forEach(element => {
                 Vue.component(element.id, {
                     props: ['data'],
-                    template: `#${element.id}`,
-                    methods: {
-                        change: function(index, value) {
-                            alert(value);
-                        }
-                    }
+                    template: `#${element.id}`
                 });
             });
 
