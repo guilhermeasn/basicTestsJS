@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+        <title>Test Sugar Number</title>
+
+        <style>
+
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            table thead tr {
+                background-color: #444;
+                color: #eee;
+            }
+
+            td, th {
+                border: 1px solid #ccc;
+                text-align: center;
+                padding: 8px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #eee;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <h2>Test Sugar Number</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Real Number</th>
+                    <th>Sugar Number<br />1 Length</th>
+                    <th>Sugar Number<br />2 Length</th>
+                    <th>Sugar Number<br />3 Length</th>
+                </tr>
+            </thead>
+            <tbody id='output'></tbody>
+        </table>
+
+        <script>
+
+            function sugarNumber(current, maxLength = 3) {
+                return current % (10 ** maxLength - 1) + 1;
+            }
+
+            (function () {
+
+                const output = document.getElementById('output');
+
+                let current = 0;
+
+                const interval = setInterval(() => {
+
+                    output.insertAdjacentHTML('beforeend', `
+                        <tr>
+                            <th>${current}</th>
+                            <td>${sugarNumber(current, 1)}</td>
+                            <td>${sugarNumber(current, 2)}</td>
+                            <td>${sugarNumber(current, 3)}</td>
+                        </tr>
+                    `);
+
+                    if (current < 1000000) current++;
+                    else clearInterval(interval);
+
+                });
+
+            })();
+
+        </script>
+
+    </body>
+</html>
