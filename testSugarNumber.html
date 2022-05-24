@@ -49,8 +49,8 @@
         <script>
 
             function sugarNumber(current, maxLength = 3) {
-                const calc = current % (10 ** maxLength - 1) + 1;
-                return calc > 0 ? calc : calc * -1;
+                if(current < 0) current = current * -1;
+                return current % (10 ** maxLength - 1) + 1;
             }
 
             function padder(content, lenght, padding, right) {
