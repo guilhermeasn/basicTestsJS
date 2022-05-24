@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
     <head>
 
@@ -53,6 +52,21 @@
                 return current % (10 ** maxLength - 1) + 1;
             }
 
+            function padder(content, lenght, padding, right) {
+                let padder = '';
+
+                content = content ? content.toString() : '';
+                padding = padding ? padding.toString() : '0';
+
+                for(let c = 0; c < lenght; c++) {
+                    padder += padding;
+                }
+
+                padder = padder.slice(0, lenght);
+
+                return right ? (content + padder).slice(0, lenght) : (padder + content).slice(content.length);
+            }
+
             (function () {
 
                 const output = document.getElementById('output');
@@ -63,10 +77,10 @@
 
                     output.insertAdjacentHTML('beforeend', `
                         <tr>
-                            <th>${current}</th>
-                            <td>${sugarNumber(current, 1)}</td>
-                            <td>${sugarNumber(current, 2)}</td>
-                            <td>${sugarNumber(current, 3)}</td>
+                            <th>${ current }</th>
+                            <td>${ padder(sugarNumber(current, 1), 1) }</td>
+                            <td>${ padder(sugarNumber(current, 2), 2) }</td>
+                            <td>${ padder(sugarNumber(current, 3), 3) }</td>
                         </tr>
                     `);
 
