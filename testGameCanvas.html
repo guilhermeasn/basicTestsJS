@@ -1,0 +1,285 @@
+<html lang="pt-br">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Jogo de Tiro</title>
+        <style>
+            body {
+                margin: 10;
+                padding: 0;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            canvas {
+                background-color: rgb(196, 232, 255);
+            }
+            p {
+                color: #444;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <p>Pontuação:&nbsp;<strong id="score"></strong>&nbsp;/&nbsp;<span id="maxscore"></span></p>
+        <canvas id="gameCanvas" />
+
+        <script>
+            const score = document.getElementById("score");
+            const maxScore = document.getElementById("maxscore");
+
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
+
+            score.innerHTML = '0';
+            maxscore.innerHTML = localStorage.getItem('maxscore') || '0';
+
+            canvas.width = window.innerWidth - 100;
+            canvas.height = window.innerHeight - 100;
+
+            let player = {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                size: 25,
+                speed: 5,
+                color: "#400",
+                crash: false
+            };
+
+            let enemies = [];
+
+            let bullets = [];
+
+            let keys = {};
+
+            let pause = false;
+
+            // Adição de novas balas quando o usuário clica
+            canvas.addEventListener("click", event => {
+                if(!pause && !player.crash) {
+                    bullets.push({
+                        x: player.x + player.size / 2 - 2,
+                        y: player.y,
+                        width: 4,
+                        height: 8,
+                        speed: 10,
+                        color: "#122"
+                    });
+                    pause = true;
+                    setTimeout(() => pause = false, 100);
+                }
+            });
+
+            // Remoção dos inimigos mortos
+            setInterval(() => enemies = enemies.filter(enemie => !enemie.crash), 500);
+
+            document.addEventListener("keydown", function(event) {
+                keys[event.code] = true;
+                if(event.code === 'Space') {
+                    canvas.dispatchEvent(new Event('click'));
+                }
+            });
+
+            document.addEventListener("keyup", function(event) {
+                keys[event.code] = false;
+            });
+
+            function drawStar(cx, cy, spikes, outerRadius, innerRadius, color) {
+
+                let rot = Math.PI / 2 * 3;
+                let x = cx;
+                let y = cy;
+                let step = Math.PI / spikes;
+
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - outerRadius)
+
+                for (i = 0; i < spikes; i++) {
+                    x = cx + Math.cos(rot) * outerRadius;
+                    y = cy + Math.sin(rot) * outerRadius;
+                    ctx.lineTo(x, y)
+                    rot += step
+                    x = cx + Math.cos(rot) * innerRadius;
+                    y = cy + Math.sin(rot) * innerRadius;
+                    ctx.lineTo(x, y)
+                    rot += step
+                }
+
+                ctx.lineTo(cx, cy - outerRadius)
+                ctx.closePath();
+
+                ctx.fillStyle=color;
+                ctx.fill();
+
+            }
+
+            function update() {
+
+                canvas.width = window.innerWidth - 100;
+                canvas.height = window.innerHeight - 100;
+
+                // Adicionar inimigo
+                const size = Math.round(Math.random() * 40 + 10);
+                const min = parseInt(score.innerHTML) <= 0 ? 0.05 : score.innerHTML.length * 0.1;
+                if(Math.random() < 0.1 && Math.random() < min) enemies.push({
+                    x: Math.round((canvas.width - size) * Math.random()),
+                    y: 0,
+                    size: size,
+                    speed: Math.round(Math.random() * 3 + 1),
+                    color: "#444",
+                    crash: false
+                });
+
+                // Atualização da posição do jogador
+                if(!player.crash) {
+                    if(keys["ArrowUp"] || keys["KeyW"]) {
+                        player.y -= player.speed;
+                        if(player.y < 0) player.y = 0;
+                    }
+                    if(keys["ArrowDown"] || keys["KeyS"]) {
+                        player.y += player.speed;
+                        const max = canvas.height - player.size;
+                        if(player.y > max) player.y = max;
+                    }
+                    if(keys["ArrowLeft"] || keys["KeyA"]) {
+                        player.x -= player.speed;
+                        if(player.x < 0) player.x = 0;
+                    }
+                    if(keys["ArrowRight"] || keys["KeyD"]) {
+                        player.x += player.speed;
+                        const max = canvas.width - player.size;
+                        if(player.x > max) player.x = max;
+                    }
+                }
+
+                // Atualização da posiçao dos inimigos
+                for(let i = 0; i < enemies.length; i++) {
+                    if(!enemies[i].crash) enemies[i].y += enemies[i].speed;
+                }
+
+                // Remocao dos inimigos que sairam da tela
+                enemies = enemies.filter(enemie => {
+                    if(enemie.y > canvas.height) {
+                        score.innerHTML = parseInt(score.innerHTML) - 1;
+                        if(parseInt(score.innerHTML) < 0) score.innerHTML = '0';
+                        return false;
+                    }
+                    return true;
+                });
+
+                // Atualização da posição das balas
+                for(let i = 0; i < bullets.length; i++) {
+                    bullets[i].y -= bullets[i].speed;
+                }
+
+                // Remoção das balas que saíram da tela
+                bullets = bullets.filter(bullet => {
+                    return bullet.y > 0;
+                });
+
+                // Calcular colisoes de balas
+                bullets = bullets.filter(bullet => {
+
+                    const i = enemies.findIndex(enemie => 
+                        bullet.x >= enemie.x && bullet.x <= enemie.x + enemie.size &&
+                        bullet.y >= enemie.y && bullet.y <= enemie.y + enemie.size
+                    );
+
+                    if(i >= 0) {
+
+                        const points = 100 - enemies[i].size;
+                        score.innerHTML = parseInt(score.innerHTML) + points;
+                        enemies[i].crash = true;
+
+                        if(parseInt(score.innerHTML) > localStorage.getItem('maxscore')) {
+                            localStorage.setItem('maxscore', score.innerHTML);
+                            maxScore.innerHTML = score.innerHTML;
+                        }
+
+                        return false;
+                    }
+
+                    return true;
+
+                });
+
+                // Calcular colisao com o jogador
+                enemies.forEach((enemie, i) => {
+
+                    const find = (player.x >= enemie.x && player.x <= enemie.x + enemie.size
+                              && player.y >= enemie.y && player.y <= enemie.y + enemie.size)
+                              || (player.x + player.size >= enemie.x && player.x + player.size <= enemie.x + enemie.size
+                              && player.y + player.size >= enemie.y && player.y + player.size <= enemie.y + enemie.size)
+
+                    if(find) {
+                        score.innerHTML = parseInt(score.innerHTML) - 100;
+                        if(parseInt(score.innerHTML) < 0) score.innerHTML = '0';
+                        enemies = enemies.filter((_, k) => k !== i);
+                        player.crash = true;
+                    }
+
+                });
+
+                // Limpar desenho
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Desenhar jogador
+                if(player.crash) {
+
+                    drawStar(player.x, player.y, 12, 30, 10, player.color);
+                    setTimeout(() => player.crash = false, 1000);
+
+                } else {
+
+                    if(player.x + player.size > canvas.width) player.x = canvas.width - player.size;
+                    if(player.y + player.size > canvas.height) player.y = canvas.height - player.size;
+
+                    ctx.fillStyle = player.color;
+                    ctx.beginPath();
+                    ctx.moveTo(player.x + player.size / 2, player.y);
+                    ctx.lineTo(player.x, player.y + player.size);
+                    ctx.lineTo(player.x + player.size / 2, player.y + player.size / 1.4);
+                    ctx.lineTo(player.x + player.size, player.y + player.size);
+                    ctx.fill();
+
+                }
+
+                // Desenhar inimigos
+                enemies.forEach((enemie, i) => {
+
+                    if(enemie.crash) {
+
+                        drawStar(enemie.x, enemie.y, 12, 30, 10, enemie.color);
+
+                    } else {
+
+                        ctx.fillStyle = enemie.color;
+                        ctx.beginPath();
+                        ctx.moveTo(enemie.x, enemie.y);
+                        ctx.lineTo(enemie.x + enemie.size / 2, enemie.y + enemie.size);
+                        ctx.lineTo(enemie.x + enemie.size, enemie.y);
+                        ctx.lineTo(enemie.x + enemie.size / 2, enemie.y + enemie.size / 2.4);
+                        ctx.fill();
+
+                    }
+
+                });
+
+                // Desenhar balas
+                bullets.forEach(bullet => {
+                    ctx.fillStyle = bullet.color;
+                    ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+                });
+
+                // Loop do jogo
+                requestAnimationFrame(update);
+
+            }
+            
+            update();
+
+        </script>
+    
+    </body>
+
+</html>
