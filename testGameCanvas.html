@@ -72,7 +72,7 @@
                         color: "#122"
                     });
                     pause = true;
-                    setTimeout(() => pause = false, 100);
+                    setTimeout(() => pause = false, 10);
                 }
             });
 
@@ -119,7 +119,15 @@
 
             }
 
+            function getRandomInt(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min) + min);
+            }
+
             function update() {
+
+                const level = Math.round(parseInt(score.innerHTML) / 1000) + 1;
 
                 canvas.width = window.innerWidth - 100;
                 canvas.height = window.innerHeight - 100;
@@ -132,13 +140,13 @@
                 if(!stopGame) {
 
                     // Adicionar inimigo
-                    const size = Math.round(Math.random() * 40 + 10);
-                    const min = parseInt(score.innerHTML) <= 0 ? 0.05 : score.innerHTML.length * 0.1;
+                    const size = getRandomInt(level > 4 ? 10 : 60 - level * 10, 50);
+                    const min = level >= 10 ? 1 : level / 10;
                     if(Math.random() < 0.1 && Math.random() < min) enemies.push({
                         x: Math.round((canvas.width - size) * Math.random()),
                         y: 0,
                         size: size,
-                        speed: Math.round(Math.random() * (parseInt(score.innerHTML) < 5000 ? 7 : 14 ) + 1),
+                        speed: getRandomInt(1, level),
                         color: "#444",
                         crash: false
                     });
