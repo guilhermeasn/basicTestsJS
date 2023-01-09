@@ -21,16 +21,20 @@
 
     <body>
 
-        <p>Pontuação:&nbsp;<strong id="score"></strong>&nbsp;/&nbsp;<span id="maxscore"></span></p>
+        <p>Pontuação:&nbsp;<strong id="score"></strong>&nbsp;/&nbsp;<span id="maxscore"></span>&nbsp;<span id="lifes"></span></p>
         <canvas id="gameCanvas" />
 
         <script>
+            const lifes = document.getElementById("lifes");
             const score = document.getElementById("score");
             const maxScore = document.getElementById("maxscore");
 
             const canvas = document.getElementById("gameCanvas");
             const ctx = canvas.getContext("2d");
 
+            let lifesCount = 5;
+
+            lifes.innerHTML = '&#9829;&#9829;&#9829;&#9829;&#9829;';
             score.innerHTML = '0';
             maxscore.innerHTML = localStorage.getItem('maxscore') || '0';
 
@@ -221,8 +225,17 @@
                                 && player.y + player.size >= enemie.y && player.y + player.size <= enemie.y + enemie.size)
 
                         if(find) {
-                            score.innerHTML = parseInt(score.innerHTML) - 100;
-                            if(parseInt(score.innerHTML) < 0) score.innerHTML = '0';
+                            if(--lifesCount > 0) {
+                                score.innerHTML = parseInt(score.innerHTML) - 100;
+                                if(parseInt(score.innerHTML) < 0) score.innerHTML = '0';
+                            } else {
+                                score.innerHTML = '0';
+                                lifesCount = 5;
+                            }
+                            lifes.innerHTML = '';
+                            for(let c = 0; c < lifesCount; c++) {
+                                lifes.innerHTML += '&#9829;';
+                            }
                             enemies = enemies.filter((_, k) => k !== i);
                             player.crash = true;
                         }
