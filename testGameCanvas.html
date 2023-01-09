@@ -2,7 +2,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Jogo de Tiro</title>
+        <title>Game Canvas Bullets</title>
         <style>
             body {
                 margin: 10;
@@ -36,7 +36,7 @@
 
             lifes.innerHTML = '&#9829;&#9829;&#9829;&#9829;&#9829;';
             score.innerHTML = '0';
-            maxscore.innerHTML = localStorage.getItem('maxscore') || '0';
+            maxscore.innerHTML = localStorage.getItem('gcb-maxscore') || '0';
 
             canvas.width = window.innerWidth - 100;
             canvas.height = window.innerHeight - 100;
@@ -62,7 +62,8 @@
 
             // Adição de novas balas quando o usuário clica
             canvas.addEventListener("click", event => {
-                if(!pause && !player.crash && !stopGame) {
+                stopGame = false;
+                if(!pause && !player.crash) {
                     bullets.push({
                         x: player.x + player.size / 2 - 2,
                         y: player.y,
@@ -134,7 +135,33 @@
 
                 // Pausar ou continuar jogo
                 if(keys['Escape'] || keys['KeyP']) {
-                    stopGame = !stopGame;
+                    stopGame = true;
+                }
+
+                // Atualização da posição do jogador
+                if(!player.crash) {
+                    if(keys["ArrowUp"] || keys["KeyW"]) {
+                        stopGame = false;
+                        player.y -= player.speed;
+                        if(player.y < 0) player.y = 0;
+                    }
+                    if(keys["ArrowDown"] || keys["KeyS"]) {
+                        stopGame = false;
+                        player.y += player.speed;
+                        const max = canvas.height - player.size;
+                        if(player.y > max) player.y = max;
+                    }
+                    if(keys["ArrowLeft"] || keys["KeyA"]) {
+                        stopGame = false;
+                        player.x -= player.speed;
+                        if(player.x < 0) player.x = 0;
+                    }
+                    if(keys["ArrowRight"] || keys["KeyD"]) {
+                        stopGame = false;
+                        player.x += player.speed;
+                        const max = canvas.width - player.size;
+                        if(player.x > max) player.x = max;
+                    }
                 }
 
                 if(!stopGame) {
@@ -150,28 +177,6 @@
                         color: "#444",
                         crash: false
                     });
-
-                    // Atualização da posição do jogador
-                    if(!player.crash) {
-                        if(keys["ArrowUp"] || keys["KeyW"]) {
-                            player.y -= player.speed;
-                            if(player.y < 0) player.y = 0;
-                        }
-                        if(keys["ArrowDown"] || keys["KeyS"]) {
-                            player.y += player.speed;
-                            const max = canvas.height - player.size;
-                            if(player.y > max) player.y = max;
-                        }
-                        if(keys["ArrowLeft"] || keys["KeyA"]) {
-                            player.x -= player.speed;
-                            if(player.x < 0) player.x = 0;
-                        }
-                        if(keys["ArrowRight"] || keys["KeyD"]) {
-                            player.x += player.speed;
-                            const max = canvas.width - player.size;
-                            if(player.x > max) player.x = max;
-                        }
-                    }
 
                     // Atualização da posiçao dos inimigos
                     for(let i = 0; i < enemies.length; i++) {
@@ -212,8 +217,8 @@
                             score.innerHTML = parseInt(score.innerHTML) + points;
                             enemies[i].crash = true;
 
-                            if(parseInt(score.innerHTML) > localStorage.getItem('maxscore')) {
-                                localStorage.setItem('maxscore', score.innerHTML);
+                            if(parseInt(score.innerHTML) > parseInt(localStorage.getItem('gcb-maxscore') || '0')) {
+                                localStorage.setItem('gcb-maxscore', score.innerHTML);
                                 maxScore.innerHTML = score.innerHTML;
                             }
 
